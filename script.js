@@ -11,7 +11,7 @@ searchBtn.on("click", function (e) {
   e.preventDefault();
   locationName = inputEl.val().trim();
   console.log(locationName);
-  //   url
+  //   url to access locations lat and lon
   var locationURL =
     "https://api.openweathermap.org/geo/1.0/direct?q=" +
     locationName +
@@ -19,11 +19,13 @@ searchBtn.on("click", function (e) {
     key;
 
   $.ajax({
-    ulr: locationURL,
+    url: locationURL,
     method: "GET",
   }).then(function (response) {
     console.log(locationURL);
-    // console.log(response);
+    console.log(response);
+    console.log(response[0].lat);
+    console.log(response[0].lon);
   });
 });
 

@@ -11,35 +11,6 @@ searchBtn.on("click", function (e) {
   e.preventDefault();
   locationName = inputEl.val().trim();
   console.log(locationName);
-  latLon();
-  //   Base url with lon and lat
-
-  var baseURL =
-    " https://api.openweathermap.org/data/2.5/forecast?lat=" +
-    lat +
-    "&lon=" +
-    lon +
-    "&appid=" +
-    key;
-  $.ajax({
-    url: baseURL,
-    method: "GET",
-  }).then(function (response) {
-    console.log(baseURL);
-    console.log(response);
-    console.log(response.city.name);
-    console.log(response.list[0].dt_txt);
-    console.log(response.list[0].weather[0].icon);
-    console.log("Wind: " + response.list[0].wind.speed + " KPH");
-    console.log(
-      "Temp: " + (response.list[0].main.temp - 273.15).toFixed(0) + " C"
-    );
-    console.log("Humidity: " + response.list[0].main.humidity + " %");
-  });
-});
-
-// Function to get lon and lat
-function latLon() {
   // url to access locations lat and lon
   var locationURL =
     "https://api.openweathermap.org/geo/1.0/direct?q=" +
@@ -55,5 +26,28 @@ function latLon() {
     lon = response[0].lon;
     console.log(lat);
     console.log(lon);
+    //   Base url with lon and lat
+    var baseURL =
+      " https://api.openweathermap.org/data/2.5/forecast?lat=" +
+      lat +
+      "&lon=" +
+      lon +
+      "&appid=" +
+      key;
+    $.ajax({
+      url: baseURL,
+      method: "GET",
+    }).then(function (response) {
+      console.log(baseURL);
+      console.log(response);
+      console.log(response.city.name);
+      console.log(response.list[0].dt_txt);
+      console.log(response.list[0].weather[0].icon);
+      console.log("Wind: " + response.list[0].wind.speed + " KPH");
+      console.log(
+        "Temp: " + (response.list[0].main.temp - 273.15).toFixed(0) + " C"
+      );
+      console.log("Humidity: " + response.list[0].main.humidity + " %");
+    });
   });
-}
+});

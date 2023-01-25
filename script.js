@@ -5,8 +5,7 @@ var historyEl = $("#history");
 var forecast = $("#forecast");
 
 var key = "e5d92f08ca1eeb7ebd94f78928323033";
-
-var locationName = "";
+// var locationName = "";
 
 // Search Event Listiner
 searchBtn.on("click", function (e) {
@@ -57,7 +56,7 @@ function getWeather() {
   }).then(function (response) {
     console.log(response);
     var cityName = response.city.name;
-    var todayDate = moment().format("l");
+    var todayDate = moment().format("DD/MM/YYYY");
     var iconNr = response.list[0].weather[0].icon;
     var urlIcon = "http://openweathermap.org/img/wn/" + iconNr + "@2x.png";
     var windToday = response.list[0].wind.speed;
@@ -84,7 +83,10 @@ function getWeather() {
       divForecast.addClass("col-2");
       //
       var h6El = $("<h6>");
-      h6El.text(response.list[i].dt_txt);
+      var dateFormat = moment(
+        response.list[i].dt_txt.slice(0, 10).trim()
+      ).format("DD/MM/YYYY");
+      h6El.text(dateFormat);
       var iconNr = response.list[i].weather[0].icon;
       var urlIcon = "http://openweathermap.org/img/wn/" + iconNr + "@2x.png";
       var iconImg = $("<img>");

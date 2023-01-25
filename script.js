@@ -14,6 +14,12 @@ searchBtn.on("click", function (e) {
   todayEl.empty();
   forecast.empty();
   var locationName = inputEl.val().trim();
+  // Create button to hold prev search
+  var historyBtn = $("<button>");
+  historyBtn.addClass("history-btn mt-1");
+  historyBtn.text(locationName);
+  historyEl.append(historyBtn);
+  //
   latLon(locationName);
 });
 
@@ -97,3 +103,12 @@ function getWeather() {
     }
   });
 }
+
+historyEl.on("click", ".history-btn", function (e) {
+  e.preventDefault();
+  var elementText = $(e.target).text();
+  console.log(elementText);
+  todayEl.empty();
+  forecast.empty();
+  latLon(elementText);
+});

@@ -5,6 +5,9 @@ var historyEl = $("#history");
 var forecast = $("#forecast");
 
 var key = "e5d92f08ca1eeb7ebd94f78928323033";
+var btnArray = [];
+
+getFromStorage();
 
 // Adding background color on search button
 searchBtn.attr("style", "background: darkGrey");
@@ -21,6 +24,13 @@ searchBtn.on("click", function (e) {
     historyBtn.addClass("history-btn mt-1");
     var locationNameCap =
       locationName.charAt(0).toUpperCase() + locationName.slice(1);
+
+    // pushing to array creating Local Storage
+    btnArray.push(locationNameCap);
+    console.log(btnArray);
+    localStorage.setItem("buttons", JSON.stringify(btnArray));
+    //
+
     historyBtn.text(locationNameCap);
     historyEl.append(historyBtn);
     latLon(locationName);
@@ -42,12 +52,8 @@ function latLon(city) {
     url: locationURL,
     method: "GET",
   }).then(function (response) {
-    console.log(response);
     lat = response[0].lat;
-    console.log(lat);
     lon = response[0].lon;
-    console.log(lon);
-
     getWeather();
   });
 }
@@ -65,8 +71,6 @@ function getWeather() {
     url: baseURL,
     method: "GET",
   }).then(function (response) {
-    console.log(baseURL);
-    console.log(response);
     var cityName = response.city.name;
     var todayDate = moment().format("DD/MM/YYYY");
     var iconNr = response.list[0].weather[0].icon;
@@ -117,6 +121,7 @@ function getWeather() {
 }
 
 // click event on buttons for previous searches
+
 historyEl.on("click", ".history-btn", function (e) {
   e.preventDefault();
   var elementText = $(e.target).text();
@@ -124,3 +129,19 @@ historyEl.on("click", ".history-btn", function (e) {
   forecast.empty();
   latLon(elementText);
 });
+
+// get  btns from prev searches FUnction
+
+function getFromStorage() {
+  var recievedArray = JSON.parse(localStorage.getItem("buttons"));
+  if (recievedArray) {
+    btnArray = recievedArray;
+    console.log(recievedArray);
+    for (i = 0; i < recievedArray.length; i++) {
+      var btnHist = $("<button>" + recievedArray[i] + "</button>");
+      btnHist.addClass("history-btn mt-1");
+      historyEl.append(btnHist);
+    }
+    latLon(recievedArray[0]);
+  }
+}

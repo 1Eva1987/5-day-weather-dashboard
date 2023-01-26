@@ -5,7 +5,9 @@ var historyEl = $("#history");
 var forecast = $("#forecast");
 
 var key = "e5d92f08ca1eeb7ebd94f78928323033";
-// var locationName = "";
+
+// Adding background color on search button
+searchBtn.attr("style", "background: darkGrey");
 
 // Search Event Listiner
 searchBtn.on("click", function (e) {
@@ -14,29 +16,38 @@ searchBtn.on("click", function (e) {
   forecast.empty();
   var locationName = inputEl.val().trim();
   // Create button to hold prev search
-  var historyBtn = $("<button>");
-  historyBtn.addClass("history-btn mt-1");
-  historyBtn.text(locationName);
-  historyEl.append(historyBtn);
-  //
-  latLon(locationName);
+  if (inputEl.val()) {
+    var historyBtn = $("<button>");
+    historyBtn.addClass("history-btn mt-1");
+    var locationNameCap =
+      locationName.charAt(0).toUpperCase() + locationName.slice(1);
+    historyBtn.text(locationNameCap);
+    historyEl.append(historyBtn);
+    latLon(locationName);
+  } else {
+    locationName = "London";
+    latLon(locationName);
+  }
+  inputEl.val("");
 });
 
-// Function get lat and lon
+// Function get lat and lon values
 function latLon(city) {
-  // URL to access locations lat and lon
   var locationURL =
     "https://api.openweathermap.org/geo/1.0/direct?q=" +
     city +
     "&limit=5&appid=" +
     key;
-  // Getting lat and lon values
   $.ajax({
     url: locationURL,
     method: "GET",
   }).then(function (response) {
+    console.log(response);
     lat = response[0].lat;
+    console.log(lat);
     lon = response[0].lon;
+    console.log(lon);
+
     getWeather();
   });
 }
@@ -54,6 +65,7 @@ function getWeather() {
     url: baseURL,
     method: "GET",
   }).then(function (response) {
+    console.log(baseURL);
     console.log(response);
     var cityName = response.city.name;
     var todayDate = moment().format("DD/MM/YYYY");
@@ -62,7 +74,7 @@ function getWeather() {
     var windToday = response.list[0].wind.speed;
     var tempToday = (response.list[0].main.temp - 273.15).toFixed(0);
     var humidityToday = response.list[0].main.humidity;
-    // create elements
+    // Create html elements
     var h4El = $("<h4>");
     h4El.text(cityName + " (" + todayDate + ")");
     var iconImg = $("<img>");
@@ -74,14 +86,11 @@ function getWeather() {
     var pHumidityToday = $("<p>");
     pHumidityToday.text("Humidity: " + humidityToday + "%");
     todayEl.append(h4El, iconImg, pTempEl, pWindEl, pHumidityToday);
-    // loop over the response list array
-    // 40 items for 5 days (40/5 = 8) every 8 element is new day
-    // 0 item is today
+    todayEl.attr("style", "border: 2px solid black");
+    // Weather for comming 5 days
     for (var i = 7; i < response.list.length; i += 8) {
-      console.log(response.list[i]);
       var divForecast = $("<div>");
-      divForecast.addClass("col-2");
-      //
+      divForecast.addClass("col-2 ml-3 mt-2");
       var h6El = $("<h6>");
       var dateFormat = moment(
         response.list[i].dt_txt.slice(0, 10).trim()
@@ -101,15 +110,16 @@ function getWeather() {
       var pHumidity = $("<p>");
       pHumidity.text("Humidity: " + humidity + "%");
       divForecast.append(h6El, iconImg, pTempEl, pWindEl, pHumidity);
+      divForecast.attr("style", "background: darkGrey");
       forecast.append(divForecast);
     }
   });
 }
 
+// click event on buttons for previous searches
 historyEl.on("click", ".history-btn", function (e) {
   e.preventDefault();
   var elementText = $(e.target).text();
-  console.log(elementText);
   todayEl.empty();
   forecast.empty();
   latLon(elementText);

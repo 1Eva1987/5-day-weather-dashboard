@@ -17,7 +17,6 @@ searchBtn.on("click", function (e) {
   forecast.empty();
   var locationName = inputEl.val().trim();
   // Create button to hold prev search
-
   if (inputEl.val()) {
     var historyBtn = $("<button>");
     historyBtn.addClass("history-btn mt-2 mb-2 p-2");
@@ -36,8 +35,7 @@ searchBtn.on("click", function (e) {
     historyEl.append(historyBtn);
     latLon(locationName);
   } else {
-    locationName = "London";
-    latLon(locationName);
+    latLon("London");
   }
   inputEl.val("");
 });
